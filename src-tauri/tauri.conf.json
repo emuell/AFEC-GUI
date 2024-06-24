@@ -28,6 +28,9 @@
     },
     "bundle": {
       "active": true,
+      "targets": [
+        "app"
+      ],
       "category": "Music",
       "copyright": "",
       "deb": {
@@ -52,7 +55,6 @@
       },
       "resources": [],
       "shortDescription": "",
-      "targets": "all",
       "windows": {
         "certificateThumbprint": null,
         "digestAlgorithm": "sha256",
@@ -69,10 +71,10 @@
       {
         "fullscreen": false,
         "height": 600,
+        "width": 800,
         "resizable": true,
         "title": "AFEC-Explorer",
-        "visible": false,
-        "width": 800
+        "visible": false
       }
     ]
   }
