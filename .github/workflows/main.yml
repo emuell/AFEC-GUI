@@ -46,7 +46,7 @@ jobs:
           - {
               name: "macOS",
               executable_name: "AFEC-Explorer.app",
-              os: macos-11,
+              os: macos-13,
             }
 
     steps:
