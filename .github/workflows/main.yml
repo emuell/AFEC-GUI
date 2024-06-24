@@ -40,7 +40,7 @@ jobs:
             }
           - {
               name: "Ubuntu",
-              executable_name: "AFEC-Explorer",
+              executable_name: "afec-explorer",
               os: ubuntu-20.04,
             }
           - {
@@ -133,7 +133,7 @@ jobs:
           appstore-connect-username: ${{ secrets.MACOS_NOTARY_USER }}
           appstore-connect-password: ${{ secrets.MACOS_NOTARY_PASS }}
           appstore-connect-team-id: ${{ secrets.MACOS_CODE_CERT_TEAM_ID }}
-          primary-bundle-id: org.afec.browser
+          primary-bundle-id: org.emuell.afec
           product-path: ./src-tauri/target/universal-apple-darwin/release/bundle/macos/${{ matrix.config.executable_name }}
           verbose: false
 
