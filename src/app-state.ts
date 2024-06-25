@@ -61,6 +61,12 @@ class AppState {
     mobx.makeObservable(this);
   }
 
+  // change the currently selected file in the database
+  @mobx.action
+  setSelectedFilePath(path: string) {
+    this.selectedFilePath = path;
+  }
+
   // open a new database
   @mobx.action
   async openDatabase(filename: string): Promise<void> {
@@ -68,16 +74,22 @@ class AppState {
     try {
       this.selectedFilePath = "";
       await this._database.open(filename);
-      this.databasePath = filename;
-      this.databaseError = "";
+      mobx.runInAction(() => {
+        this.databasePath = filename;
+        this.databaseError = "";
+      });
     }
     catch (err) {
-      this.databasePath = filename;
-      this.databaseError = (err as any).message || String(err);
+      mobx.runInAction(() => {
+        this.databasePath = filename;
+        this.databaseError = (err as any).message || String(err);
+      })
       throw err;
     }
     finally {
-      --this.isLoadingDatabase;
+      mobx.runInAction(() => {
+        --this.isLoadingDatabase;
+      });
     }
   }
 
@@ -91,22 +103,10 @@ class AppState {
     return this._database.categoryNames;
   }
 
-  // fetch files at \param rootPath
-  @mobx.action
-  async fetchFiles(rootPath: string): Promise<File[]> {
-    ++this.isLoadingFiles;
-    try {
-      return await this._database.fetchFiles(rootPath);
-    }
-    finally {
-      --this.isLoadingFiles;
-    }
-  }
-
-  // create a normalized abs path of the given file path.
+  // get a normalized abs path for the given file path.
   // When the file path is relative, prefix it with the DB path, 
   // else return the path as it is, normalized. 
-  async fileAbsPath(filePath: string): Promise<string> {
+  async databaseFilePath(filePath: string): Promise<string> {
     if (!filePath) {
       return "";
     }
@@ -118,7 +118,22 @@ class AppState {
     return absPath;
   }
 
+  // fetch files at \param rootPath
+  @mobx.action
+  async fetchFiles(rootPath: string): Promise<File[]> {
+    ++this.isLoadingFiles;
+    try {
+      return await this._database.fetchFiles(rootPath);
+    }
+    finally {
+      mobx.runInAction(() => {
+        --this.isLoadingFiles;
+      });
+    }
+  }
+
   // calculate a mono waveform for selected file
+  @mobx.action
   async generateWaveform(width: number): Promise<WaveformPoint[]> {
     if (!this.databasePath || this.databaseError || !this.selectedFilePath) {
       return Promise.reject(new Error("No file selected"));
@@ -126,13 +141,17 @@ class AppState {
 
     ++this.isGeneratingWaveform;
     try {
-      let filePath = await this.fileAbsPath(this.selectedFilePath);
+      let filePath = await this.databaseFilePath(this.selectedFilePath);
       let results = await generateWaveform(filePath, width);
-      --this.isGeneratingWaveform;
+      mobx.runInAction(() => {
+        --this.isGeneratingWaveform;
+      });
       return results;
 
     } catch (err) {
-      --this.isGeneratingWaveform;
+      mobx.runInAction(() => {
+        --this.isGeneratingWaveform;
+      });
       throw err;
     }
   }
@@ -146,7 +165,9 @@ class AppState {
       return await createPlot(this.databasePath, this.mapPerplexity, this.mapTheta, this.mapEpochs);
     }
     finally {
-      --this.isGeneratingMap;
+      mobx.runInAction(() => {
+        --this.isGeneratingMap;
+      });
     }
   }
 

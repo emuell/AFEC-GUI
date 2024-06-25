@@ -256,7 +256,7 @@ export class FileWaveViewPlot extends LitElement {
     const context = this._playbackCanvas.node()!.getContext('2d')!;
 
     // listen to file playback position changes
-    appState.fileAbsPath(appState.selectedFilePath)
+    appState.databaseFilePath(appState.selectedFilePath)
       .then((absSelectedFilePath) => {
         this._removePlaybackPositionListener = addPlaybackPositionEventListener(async (event) => {
           try {

@@ -114,9 +114,9 @@ export class FileMap extends MobxLitElement {
         <vaadin-checkbox
           class="control" 
           .checked=${appState.autoPlayFilesInGrid} 
-          @checked-changed=${(event: CustomEvent) => {
-        appState.autoPlayFilesInGrid = Boolean(event.detail.value);
-      }}
+          @checked-changed=${mobx.action((event: CustomEvent) => {
+            appState.autoPlayFilesInGrid = Boolean(event.detail.value);
+          })}
           label="Auto-Play">
         </vaadin-checkbox>
         <div class="spacer"></div>
@@ -130,9 +130,9 @@ export class FileMap extends MobxLitElement {
           .step=${5}
           .value=${String(appState.mapPerplexity)} 
           .disabled=${appState.isGeneratingMap > 0} 
-          @change=${(event: CustomEvent) => {
-        appState.mapPerplexity = Number((event.target as HTMLInputElement).value);
-      }}>
+          @change=${mobx.action((event: CustomEvent) => {
+            appState.mapPerplexity = Number((event.target as HTMLInputElement).value);
+          })}>
         </vaadin-integer-field>
         <span class="label">Theta</span>
         <vaadin-number-field
@@ -144,9 +144,9 @@ export class FileMap extends MobxLitElement {
           .step=${0.1}
           .value=${String(appState.mapTheta)} 
           .disabled=${appState.isGeneratingMap > 0} 
-          @change=${(event: CustomEvent) => {
-        appState.mapTheta = Number((event.target as HTMLInputElement).value);
-      }}>
+          @change=${mobx.action((event: CustomEvent) => {
+            appState.mapTheta = Number((event.target as HTMLInputElement).value);
+          })}>
         </vaadin-number-field>
         <span class="label">Epochs</span>
         <vaadin-integer-field
@@ -158,9 +158,9 @@ export class FileMap extends MobxLitElement {
           .step=${100}
           .value=${String(appState.mapEpochs)} 
           .disabled=${appState.isGeneratingMap > 0} 
-          @change=${(event: CustomEvent) => {
-        appState.mapEpochs = Number((event.target as HTMLInputElement).value);
-      }}>
+          @change=${mobx.action((event: CustomEvent) => {
+            appState.mapEpochs = Number((event.target as HTMLInputElement).value);
+          })}>
         </vaadin-integer-field>
       </vaadin-horizontal-layout>
     `;

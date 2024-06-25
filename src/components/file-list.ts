@@ -5,8 +5,12 @@ import * as mobx from 'mobx'
 import prettyBytes from 'pretty-bytes';
 
 import {
-  Grid, GridActiveItemChangedEvent, GridColumn, GridItemModel
+  Grid, GridActiveItemChangedEvent, GridItemModel
 } from '@vaadin/grid';
+
+import {
+  GridColumn
+} from '@vaadin/grid/vaadin-grid-column';
 
 import { appState } from '../app-state';
 import { File } from '../models/file';
@@ -89,7 +93,7 @@ export class FileList extends MobxLitElement {
   }
 
   private _playFile(file: File) {
-    appState.fileAbsPath(file.filename)
+    appState.databaseFilePath(file.filename)
       .then(playAudioFile)
       .catch(err => {
         console.warn("Audio playback error: %s", err.message || String(err))
@@ -129,7 +133,7 @@ export class FileList extends MobxLitElement {
     if (item) {
       this._suppressFileSelection = true;
       this._selectedFiles = [item];
-      appState.selectedFilePath = item.filename;
+      appState.setSelectedFilePath(item.filename);
       this._suppressFileSelection = false;
       if (appState.autoPlayFilesInList) {
         this._playFile(item);
@@ -326,9 +330,9 @@ export class FileList extends MobxLitElement {
         <vaadin-checkbox
           class="control" 
           .checked=${appState.autoPlayFilesInList} 
-          @checked-changed=${(event: CustomEvent) => {
-            appState.autoPlayFilesInList = Boolean(event.detail.value); 
-          }}
+          @checked-changed=${mobx.action((event: CustomEvent) => {
+            appState.autoPlayFilesInList = Boolean(event.detail.value);
+          })}
           label="Auto-Play">
         </vaadin-checkbox>
         <vaadin-text-field 
@@ -340,7 +344,7 @@ export class FileList extends MobxLitElement {
           .disabled=${appState.isLoadingFiles > 0} 
           .hidden=${!appState.databasePath}
           @input=${mobx.action((event: CustomEvent) => {
-            this._searchString = (event.target as HTMLInputElement).value; 
+            this._searchString = (event.target as HTMLInputElement).value;
           })} 
           clear-button-visible
         >
