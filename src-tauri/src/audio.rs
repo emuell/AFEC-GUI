@@ -91,7 +91,7 @@ impl Playback {
         // handle initialize errors
         if self.init_error.lock().unwrap().is_some() {
             return Err(anyhow!(
-                "Can't play file: Audio playback failed to intialize.",
+                "Can't play file: Audio playback failed to initialize.",
             ));
         }
 
@@ -120,7 +120,7 @@ impl Playback {
         // handle initialize errors
         if self.init_error.lock().unwrap().is_some() {
             return Err(anyhow!(
-                "Can't seek file: Audio playback failed to intialize.",
+                "Can't seek file: Audio playback failed to initialize.",
             ));
         }
         // send the source to the playback thread and start playing
@@ -141,7 +141,7 @@ impl Playback {
         // handle initialize errors
         if self.init_error.lock().unwrap().is_some() {
             return Err(anyhow!(
-                "Can't play file: Audio playback failed to intialize.",
+                "Can't play file: Audio playback failed to initialize.",
             ));
         }
         // stop playing
@@ -207,6 +207,7 @@ pub fn send_playback_position_event(
     _context: Option<AudioFilePlaybackStatusContext>
 ) {
     #[derive(Clone, serde::Serialize)]
+    #[serde(rename_all = "camelCase")]
     struct PlaybackPositionEvent {
         file_id: AudioFilePlaybackId,
         file_path: String,
@@ -233,6 +234,7 @@ pub fn send_playback_finished_event(
     _context: Option<AudioFilePlaybackStatusContext>
 ) {
     #[derive(Clone, serde::Serialize)]
+    #[serde(rename_all = "camelCase")]
     struct PlaybackFinishedEvent {
         file_id: AudioFilePlaybackId,
         file_path: String,

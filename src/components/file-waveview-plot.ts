@@ -258,8 +258,8 @@ export class FileWaveViewPlot extends LitElement {
       .then((absSelectedFilePath) => {
         this._removePlaybackPositionListener = addPlaybackPositionEventListener(async (event) => {
           try {
-            if (absSelectedFilePath == event.file_path || 
-                absSelectedFilePath == await path.normalize(event.file_path)) {
+            if (absSelectedFilePath == event.filePath || 
+                absSelectedFilePath == await path.normalize(event.filePath)) {
               if (this._removePlaybackPositionListener !== undefined) { // still connected?
                 this._drawPlaybackPosition(xScale, yScale, context, event.position);
               }
@@ -270,8 +270,8 @@ export class FileWaveViewPlot extends LitElement {
         });
         this._removePlaybackFinishedListener = addPlaybackFinishedEventListener(async (event) => {
           try {
-            if (absSelectedFilePath == event.file_path || 
-                absSelectedFilePath == await path.normalize(event.file_path)) {
+            if (absSelectedFilePath == event.filePath || 
+                absSelectedFilePath == await path.normalize(event.filePath)) {
               if (this._removePlaybackFinishedListener !== undefined) {  // still connected?
                 this._drawPlaybackPosition(xScale, yScale, context, -1);
               }
