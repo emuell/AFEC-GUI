@@ -1,5 +1,5 @@
 import * as mobx from 'mobx';
-import path from 'path-browserify';
+import * as path from '@tauri-apps/api/path'
 
 import { File } from './models/file';
 import { Database } from './controllers/database';
@@ -102,19 +102,18 @@ class AppState {
     }
   }
 
-  // abs path of the currently selected file, if any
-  @mobx.computed
-  get selectedFileAbsPath() {
-    let filePath = this.selectedFilePath;
+  // create a normalized abs path of the given file path.
+  // When the file path is relative, prefix it with the DB path, 
+  // else return the path as it is, normalized. 
+  async fileAbsPath(filePath: string): Promise<string> {
     if (!filePath) {
       return "";
     }
-    let dbPath = this.databasePath;
-    let absPath = path.normalize(filePath.replace(/\\/g, "/"));
-    if (! path.isAbsolute(absPath)) {
-      let dirname = path.dirname(dbPath.replace(/\\/g, "/"));
-      absPath = path.join(dirname, absPath);
-    } 
+    let absPath = await path.normalize(filePath);
+    if (! await path.isAbsolute(absPath)) {
+      let dirname = await path.dirname(this.databasePath);
+      absPath = await path.join(dirname, absPath);
+    }
     return absPath;
   }
 
@@ -126,8 +125,8 @@ class AppState {
 
     ++this.isGeneratingWaveform;
     try {
-
-      let results = await generateWaveform(this.databasePath, this.selectedFilePath, width); 
+      let filePath = await this.fileAbsPath(this.selectedFilePath);
+      let results = await generateWaveform(filePath, width);
       --this.isGeneratingWaveform;
       return results;
 

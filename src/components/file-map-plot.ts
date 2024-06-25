@@ -98,9 +98,10 @@ export class FileMapPlot extends LitElement {
       // Play the file
       if (appState.autoPlayFilesInGrid && this._playingPointIndex != closestPoint.index) {
         this._playingPointIndex = closestPoint.index;
-        playAudioFile(appState.databasePath, closestPoint.filename)
+        appState.fileAbsPath(closestPoint.filename)
+          .then(playAudioFile)
           .catch((err) => { 
-            console.log("Audio playback failed: %s", err)
+            console.warn("Audio playback failed: %s", err)
           });
       }
     } else {
@@ -124,9 +125,10 @@ export class FileMapPlot extends LitElement {
       // redraw all points
       this._drawPlotPoints(xScale, yScale, context, data);
       // play file
-      playAudioFile(appState.databasePath, closestPoint.filename)
-        .catch((err) => { 
-          console.log("Audio playback failed: %s", err)
+      appState.fileAbsPath(closestPoint.filename)
+        .then(playAudioFile)
+        .catch((err) => {
+          console.warn("Audio playback failed: %s", err)
         });
       // and select it
       appState.selectedFilePath = closestPoint.filename;

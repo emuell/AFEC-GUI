@@ -1,5 +1,4 @@
 import { invoke } from '@tauri-apps/api/tauri'
-import path from 'path-browserify';
 
 // -------------------------------------------------------------------------------------------------
 
@@ -21,12 +20,7 @@ export interface WaveformPoint {
   fn generate_waveform `src-tauri/waveform`
  */
 
-export async function generateWaveform(dbPath: string, filePath: string, resolution: number) {
-  let absPath = path.normalize(filePath.replace(/\\/g, "/"));
-  if (! path.isAbsolute(absPath)) {
-    let dirname = path.dirname(dbPath.replace(/\\/g, "/"));
-    absPath = path.join(dirname, absPath);
-  } 
-  return invoke<WaveformPoint[]>('generate_waveform', { filePath: absPath, resolution: Math.round(resolution) });
+export async function generateWaveform(filePath: string, resolution: number) {
+  return invoke<WaveformPoint[]>('generate_waveform', { filePath: filePath, resolution: Math.round(resolution) });
 }
 
