@@ -1,7 +1,7 @@
 {
   "name": "afec-explorer",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "files": [
     "dist"
@@ -12,32 +12,32 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@adobe/lit-mobx": "^2.2.0",
-    "@tauri-apps/api": "^1.4.0",
-    "@vaadin/button": "^23.1.1",
-    "@vaadin/checkbox": "^23.1.6",
-    "@vaadin/dialog": "^23.1.2",
-    "@vaadin/grid": "^23.1.2",
-    "@vaadin/horizontal-layout": "^23.1.1",
-    "@vaadin/icons": "^23.1.1",
-    "@vaadin/integer-field": "^23.1.5",
-    "@vaadin/notification": "^23.1.2",
-    "@vaadin/number-field": "^23.1.5",
-    "@vaadin/select": "^23.1.2",
-    "@vaadin/split-layout": "^23.1.1",
-    "@vaadin/text-field": "^23.1.2",
-    "@vaadin/vertical-layout": "^23.1.1",
-    "d3": "^7.8.2",
-    "lit": "^2.8.0",
-    "mobx": "^6.6.1",
-    "pretty-bytes": "^6.0.0",
+    "@adobe/lit-mobx": "^2.2",
+    "@tauri-apps/api": "^1.5",
+    "@vaadin/button": "^24.0",
+    "@vaadin/checkbox": "^24.0",
+    "@vaadin/dialog": "^24.0",
+    "@vaadin/grid": "^24.0",
+    "@vaadin/horizontal-layout": "^24.0",
+    "@vaadin/icons": "^24.0",
+    "@vaadin/integer-field": "^24.0",
+    "@vaadin/notification": "^24.0",
+    "@vaadin/number-field": "^24.0",
+    "@vaadin/select": "^24.0",
+    "@vaadin/split-layout": "^24.0",
+    "@vaadin/text-field": "^24.0",
+    "@vaadin/vertical-layout": "^24.0",
+    "d3": "^7.9",
+    "lit": "^3.1",
+    "mobx": "^6.12",
+    "pretty-bytes": "^6.1",
     "tauri-plugin-sqlite-api": "github:lzdyes/tauri-plugin-sqlite#v0.1.1"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^1.4.0",
-    "@types/d3": "^7.4.0",
-    "typescript": "^5.2.2",
-    "vite": "^4.4.0"
+    "@tauri-apps/cli": "^1.5",
+    "@types/d3": "^7.4",
+    "typescript": "^5.5",
+    "vite": "^5.3"
   },
   "vaadin": {
     "disableUsageStatistics": true
