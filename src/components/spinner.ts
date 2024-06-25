@@ -7,12 +7,12 @@ import '@vaadin/icon';
 import '@vaadin/vaadin-lumo-styles/vaadin-iconset.js';
 
 // -------------------------------------------------------------------------------------------------
- 
+
 // Shows a message along with an error icon
 
 @customElement('afec-spinner')
 export class Spinner extends LitElement {
-  
+
   @property()
   size: string = "16px";
 

@@ -12,7 +12,7 @@ export interface PlotEntry {
   x: number,
   y: number,
   categories: Array<string>,
-  classes: Array<string> 
+  classes: Array<string>
 }
 
 // -------------------------------------------------------------------------------------------------

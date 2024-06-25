@@ -84,7 +84,7 @@
     --lumo-size-m: 1.8rem;
     --lumo-size-s: 1.65rem;
     --lumo-size-xs: 1.5rem;
-    
+
     --lumo-line-height-m: 1.375;
     --lumo-line-height-s: 1.25;
     --lumo-line-height-xs: 1.15;
@@ -145,6 +145,10 @@ pre {
     user-select: none;
     cursor: default;
 }
-input, button, textarea, :focus {
+
+input,
+button,
+textarea,
+:focus {
     outline: none;
 }

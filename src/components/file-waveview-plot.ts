@@ -5,9 +5,9 @@ import { WaveformPoint } from '../controllers/backend/waveform';
 import * as path from '@tauri-apps/api/path'
 import * as d3 from "d3";
 
-import { addPlaybackFinishedEventListener, addPlaybackPositionEventListener } 
+import { addPlaybackFinishedEventListener, addPlaybackPositionEventListener }
   from '../controllers/backend/audio';
-  
+
 import { appState } from '../app-state';
 
 // -------------------------------------------------------------------------------------------------
@@ -18,14 +18,14 @@ import { appState } from '../app-state';
 export class FileWaveViewPlot extends LitElement {
 
   // Properties
-  @property({type: Array}) 
-  data: WaveformPoint[] = [];  
+  @property({ type: Array })
+  data: WaveformPoint[] = [];
 
   // Elements
   @query("#waveform-container")
   private _waveformContainer!: HTMLDivElement | null;
- @query("#playback-container")
-  private _playbackContainer!: HTMLDivElement | null; 
+  @query("#playback-container")
+  private _playbackContainer!: HTMLDivElement | null;
 
   // Tools
   private _resizeObserver?: ResizeObserver = undefined;
@@ -41,11 +41,11 @@ export class FileWaveViewPlot extends LitElement {
   // Mutable state
   // private _playingPosition: number = -1;
   private _zoomTransform = d3.zoomIdentity;
-  
+
   // Consts
   private readonly waveformColor = '#ff3585'
   private readonly playbackPosColor = '#ffffff'
-    
+
   private _currentPlotRect(): {
     left: number,
     right: number,
@@ -66,24 +66,26 @@ export class FileWaveViewPlot extends LitElement {
     const innerWidth = outerWidth - margin.left - margin.right;
     const innerHeight = outerHeight - margin.top - margin.bottom;
 
-    return { left: margin.left, right: margin.right, top: margin.top, bottom: margin.bottom, 
-      outerWidth, outerHeight, innerWidth, innerHeight };
+    return {
+      left: margin.left, right: margin.right, top: margin.top, bottom: margin.bottom,
+      outerWidth, outerHeight, innerWidth, innerHeight
+    };
   }
 
   private _onMouseClick(
     _data: WaveformPoint[],
-    _event: any, 
-    _xScale: d3.ScaleLinear<number, number, never>, 
-    _yScale: d3.ScaleLinear<number, number, never>, 
-    _context: CanvasRenderingContext2D, 
+    _event: any,
+    _xScale: d3.ScaleLinear<number, number, never>,
+    _yScale: d3.ScaleLinear<number, number, never>,
+    _context: CanvasRenderingContext2D,
   ) {
     // TODO
   }
-  
+
   private _drawWaveform(
-    xScale: d3.ScaleLinear<number, number, never>, 
-    yScale: d3.ScaleLinear<number, number, never>, 
-    context: CanvasRenderingContext2D, 
+    xScale: d3.ScaleLinear<number, number, never>,
+    yScale: d3.ScaleLinear<number, number, never>,
+    context: CanvasRenderingContext2D,
     data: WaveformPoint[],
   ) {
     context.save();
@@ -97,13 +99,13 @@ export class FileWaveViewPlot extends LitElement {
     context.beginPath();
     context.lineWidth = 1;
     context.strokeStyle = this.waveformColor;
-    
+
     if (data.length) {
       const x = scaleX(0);
       const minY = scaleY(data[0].min);
       context.moveTo(x, minY);
     }
-    
+
     data.forEach(point => {
       const x = scaleX(point.time);
       const minY = scaleY(point.min);
@@ -118,8 +120,8 @@ export class FileWaveViewPlot extends LitElement {
   }
 
   private _drawPlaybackPosition(
-    xScale: d3.ScaleLinear<number, number, never>, 
-    yScale: d3.ScaleLinear<number, number, never>, 
+    xScale: d3.ScaleLinear<number, number, never>,
+    yScale: d3.ScaleLinear<number, number, never>,
     context: CanvasRenderingContext2D,
     position: number
   ) {
@@ -135,7 +137,7 @@ export class FileWaveViewPlot extends LitElement {
       context.beginPath();
       context.lineWidth = 1;
       context.strokeStyle = this.playbackPosColor;
-      
+
       const x = scaleX(position);
       const y1 = scaleY(-1);
       const y2 = scaleY(1);
@@ -150,7 +152,7 @@ export class FileWaveViewPlot extends LitElement {
   private _createWaveformContainer(data: Array<WaveformPoint>) {
     const rect = this._currentPlotRect();
     const container = d3.select(this._waveformContainer!);
-   
+
     // Init Scales
     let xScale = d3.scaleLinear()
       .domain([0, data[data.length - 1].time])
@@ -158,7 +160,7 @@ export class FileWaveViewPlot extends LitElement {
     let yScale = d3.scaleLinear()
       .domain([-1, 1])
       .range([0, rect.innerHeight]);
-  
+
     // Create SVG node
     this._waveformSvg = container
       .append('svg:svg')
@@ -168,15 +170,15 @@ export class FileWaveViewPlot extends LitElement {
       .attr('class', 'svg-plot')
       .append('g')
       .attr('transform', `translate(${rect.left}, ${rect.top})`);
-    
+
     // Create X-Axis
     this._waveformSvg.append("g")
       .attr("transform", `translate(0,${rect.innerHeight - rect.bottom})`)
       .call(d3.axisBottom(xScale).ticks(rect.innerWidth / 100, ".2f"))
       .call(g => g.select(".domain").remove())
       .call(g => g.selectAll(".tick line").clone()
-          .attr("y2", -rect.innerHeight)
-          .attr("stroke-opacity", 0.1)
+        .attr("y2", -rect.innerHeight)
+        .attr("stroke-opacity", 0.1)
       );
 
     // Create Canvas overlay
@@ -195,7 +197,7 @@ export class FileWaveViewPlot extends LitElement {
     // Add click handler
     this._waveformCanvas
       .on('click', (event) => {
-        this._onMouseClick(data, event, xScale , yScale, context);
+        this._onMouseClick(data, event, xScale, yScale, context);
       });
 
     // Draw initial content
@@ -205,7 +207,7 @@ export class FileWaveViewPlot extends LitElement {
   private _createPlaybackContainer(data: Array<WaveformPoint>) {
     const rect = this._currentPlotRect();
     const container = d3.select(this._playbackContainer!);
-   
+
     // Init Scales
     let xScale = d3.scaleLinear()
       .domain([0, data[data.length - 1].time])
@@ -213,7 +215,7 @@ export class FileWaveViewPlot extends LitElement {
     let yScale = d3.scaleLinear()
       .domain([-1, 1])
       .range([0, rect.innerHeight]);
-  
+
     // Create SVG node
     this._playbackSvg = container
       .append('svg:svg')
@@ -223,7 +225,7 @@ export class FileWaveViewPlot extends LitElement {
       .attr('class', 'svg-plot')
       .append('g')
       .attr('transform', `translate(${rect.left}, ${rect.top})`);
-   
+
     // add file name label
     let displayName = appState.selectedFilePath;
     if (displayName.startsWith("./") || displayName.startsWith("\\.")) {
@@ -232,13 +234,13 @@ export class FileWaveViewPlot extends LitElement {
     this._playbackSvg
       .append("g")
       .call(g => g.append("text")
-          .attr("x", rect.innerWidth - 8)
-          .attr("y", 20)
-          .attr("fill", "currentColor")
-          .attr("text-anchor", "end")
-          .attr("font-size", 12)
-          .text(displayName)
-      ); 
+        .attr("x", rect.innerWidth - 8)
+        .attr("y", 20)
+        .attr("fill", "currentColor")
+        .attr("text-anchor", "end")
+        .attr("font-size", 12)
+        .text(displayName)
+      );
 
     // Create Canvas overlay
     this._playbackCanvas = container
@@ -258,8 +260,8 @@ export class FileWaveViewPlot extends LitElement {
       .then((absSelectedFilePath) => {
         this._removePlaybackPositionListener = addPlaybackPositionEventListener(async (event) => {
           try {
-            if (absSelectedFilePath == event.filePath || 
-                absSelectedFilePath == await path.normalize(event.filePath)) {
+            if (absSelectedFilePath == event.filePath ||
+              absSelectedFilePath == await path.normalize(event.filePath)) {
               if (this._removePlaybackPositionListener !== undefined) { // still connected?
                 this._drawPlaybackPosition(xScale, yScale, context, event.position);
               }
@@ -270,8 +272,8 @@ export class FileWaveViewPlot extends LitElement {
         });
         this._removePlaybackFinishedListener = addPlaybackFinishedEventListener(async (event) => {
           try {
-            if (absSelectedFilePath == event.filePath || 
-                absSelectedFilePath == await path.normalize(event.filePath)) {
+            if (absSelectedFilePath == event.filePath ||
+              absSelectedFilePath == await path.normalize(event.filePath)) {
               if (this._removePlaybackFinishedListener !== undefined) {  // still connected?
                 this._drawPlaybackPosition(xScale, yScale, context, -1);
               }
@@ -287,7 +289,7 @@ export class FileWaveViewPlot extends LitElement {
       });
 
   }
-  
+
   disconnectedCallback(): void {
     super.disconnectedCallback();
 
@@ -322,7 +324,7 @@ export class FileWaveViewPlot extends LitElement {
       this._resizeObserver.disconnect();
       this._resizeObserver = undefined;
     }
-    
+
     // clear all previous content
     function removeAllChildNodes(parent: HTMLElement) {
       while (parent.firstChild) {
@@ -338,11 +340,11 @@ export class FileWaveViewPlot extends LitElement {
       removeAllChildNodes(this._playbackContainer!);
       this._playbackSvg = undefined;
       this._playbackCanvas = undefined;
-    } 
+    }
 
     // reset state
     this._zoomTransform = d3.zoomIdentity;
-    
+
     // create and render waveform container
     this._createWaveformContainer(this.data);
     // create and render playback pos
@@ -351,7 +353,7 @@ export class FileWaveViewPlot extends LitElement {
     // rebuild everything on size changes
     let isInitialUpdate = true;
     this._resizeObserver = new ResizeObserver(() => {
-      if (! isInitialUpdate) {
+      if (!isInitialUpdate) {
         this.requestUpdate();
       }
       isInitialUpdate = false;

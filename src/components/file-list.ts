@@ -4,7 +4,7 @@ import { MobxLitElement } from '@adobe/lit-mobx';
 import * as mobx from 'mobx'
 import prettyBytes from 'pretty-bytes';
 
-import { 
+import {
   Grid, GridActiveItemChangedEvent, GridColumn, GridItemModel
 } from '@vaadin/grid';
 
@@ -23,23 +23,23 @@ import '@vaadin/button';
 import '@vaadin/notification';
 
 // -------------------------------------------------------------------------------------------------
- 
+
 // File list / table.
 
 @customElement('afec-file-list')
 export class FileList extends MobxLitElement {
-  
+
   @mobx.observable
   private _searchString: string = "";
-  
+
   // NB: not a state or observable: data-provider update is manually triggered 
   private _dataProvider = new FileListDataProvider();
 
   @state()
   private _fetchError: string = "";
 
-  @state() 
-  private _selectedFiles: File[] = [];  
+  @state()
+  private _selectedFiles: File[] = [];
   private _selectedItemsClicked = new Set<string>();
   private _suppressFileSelection: boolean = false;
 
@@ -68,7 +68,7 @@ export class FileList extends MobxLitElement {
       () => appState.selectedFilePath,
       (selectedFilePath) => {
         // do nothing if we're changing the selection
-        if (! this._suppressFileSelection) {
+        if (!this._suppressFileSelection) {
           let selectedFileIndex = this._dataProvider.sortedFiles.findIndex(v => v.filename === selectedFilePath);
           if (selectedFileIndex !== -1) {
             let selectedFile = this._dataProvider.sortedFiles[selectedFileIndex];
@@ -97,7 +97,7 @@ export class FileList extends MobxLitElement {
   }
 
   private _fetchFiles() {
-    if (! appState.databasePath) {
+    if (!appState.databasePath) {
       this._fetchError = "No database selected";
       this._selectedFiles = [];
       this._dataProvider.files = [];
@@ -147,8 +147,8 @@ export class FileList extends MobxLitElement {
   }
 
   private _actionRenderer(
-    root: HTMLElement, 
-    _column: GridColumn<File>, 
+    root: HTMLElement,
+    _column: GridColumn<File>,
     model: GridItemModel<File>
   ) {
     render(html`
@@ -158,10 +158,10 @@ export class FileList extends MobxLitElement {
         </vaadin-button>
       `, root)
   }
- 
+
   private _nameRenderer(
-    root: HTMLElement, 
-    _column: GridColumn<File>, 
+    root: HTMLElement,
+    _column: GridColumn<File>,
     model: GridItemModel<File>
   ) {
     let name = model.item.filename;
@@ -170,10 +170,10 @@ export class FileList extends MobxLitElement {
     }
     render(html`${name}`, root);
   }
-  
+
   private _classNameRenderer(
-    root: HTMLElement, 
-    _column: GridColumn<File>, 
+    root: HTMLElement,
+    _column: GridColumn<File>,
     model: GridItemModel<File>
   ) {
     const classNames = model.item.classes_VS;
@@ -183,10 +183,10 @@ export class FileList extends MobxLitElement {
     }
     render(html`${classNames.join(",")}`, root);
   }
-  
+
   private _categoryNameRenderer(
-    root: HTMLElement, 
-    _column: GridColumn<File>, 
+    root: HTMLElement,
+    _column: GridColumn<File>,
     model: GridItemModel<File>
   ) {
     const categoryNames = model.item.categories_VS;
@@ -204,35 +204,35 @@ export class FileList extends MobxLitElement {
     }
     render(html`${categoryNames.map(nameFilter).join(",")}`, root);
   }
-  
+
   private _timeRenderer(
-    root: HTMLElement, 
-    column: GridColumn<File>, 
+    root: HTMLElement,
+    column: GridColumn<File>,
     model: GridItemModel<File>
   ) {
     const timestamp = (model.item as any)[column.path as string] as number;
     const date = new Date(timestamp * 1000);
-    const timeString = date.getDate()+
-      "/"+(date.getMonth()+1)+
-      "/"+date.getFullYear()+
-      " "+date.getHours()+
-      ":"+date.getMinutes()+
-      ":"+date.getSeconds();
+    const timeString = date.getDate() +
+      "/" + (date.getMonth() + 1) +
+      "/" + date.getFullYear() +
+      " " + date.getHours() +
+      ":" + date.getMinutes() +
+      ":" + date.getSeconds();
     render(html`${timeString}`, root);
   }
 
   private _sizeRenderer(
-    root: HTMLElement, 
-    column: GridColumn<File>, 
+    root: HTMLElement,
+    column: GridColumn<File>,
     model: GridItemModel<File>
   ) {
     const bytes = (model.item as any)[column.path as string] as number;
     render(html`${prettyBytes(bytes)}`, root);
   }
- 
+
   private _lengthRenderer(
-    root: HTMLElement, 
-    column: GridColumn<File>, 
+    root: HTMLElement,
+    column: GridColumn<File>,
     model: GridItemModel<File>
   ) {
     const time = (model.item as any)[column.path as string] as number;
@@ -240,25 +240,25 @@ export class FileList extends MobxLitElement {
     const minutes = Math.floor(time / 60) % 60;
     const seconds = Math.floor(time - minutes * 60);
     const milliseconds = String(time).slice(-3);
-    
-    const pad = function(num: number | string, size: number) { 
-      return ('000' + num).slice(size * -1); 
+
+    const pad = function (num: number | string, size: number) {
+      return ('000' + num).slice(size * -1);
     };
-    const duration = pad(minutes + hours * 60, 2) + ':' + 
+    const duration = pad(minutes + hours * 60, 2) + ':' +
       pad(seconds, 2) + '.' + pad(milliseconds, 3);
 
     render(html`${duration}`, root);
   }
 
   private _percentageRenderer(
-    root: HTMLElement, 
-    column: GridColumn<File>, 
+    root: HTMLElement,
+    column: GridColumn<File>,
     model: GridItemModel<File>
   ) {
     const value = (model.item as any)[column.path as string] as number;
     render(html`${Math.round(value * 100) + "%"}`, root);
   }
-  
+
   static styles = css`
     :host {
       display: flex;
@@ -338,7 +338,7 @@ export class FileList extends MobxLitElement {
           clearButtonVisible
           value=${this._searchString}
           .disabled=${appState.isLoadingFiles > 0} 
-          .hidden=${! appState.databasePath}
+          .hidden=${!appState.databasePath}
           @input=${mobx.action((event: CustomEvent) => {
             this._searchString = (event.target as HTMLInputElement).value; 
           })} 
@@ -351,7 +351,7 @@ export class FileList extends MobxLitElement {
     if (this._fetchError && appState.isLoadingFiles === 0) {
       let errorMessage = this._fetchError;
       if (appState.databasePath) {
-       errorMessage = "Failed to fetch files: " + errorMessage;
+        errorMessage = "Failed to fetch files: " + errorMessage;
       }
       return html`
         ${header}

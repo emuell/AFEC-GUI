@@ -1,9 +1,11 @@
-use afplay::{
-    AudioFilePlaybackId, AudioFilePlaybackStatusEvent, AudioFilePlayer, AudioOutput,
-    DefaultAudioOutput, FilePlaybackOptions, AudioFilePlaybackStatusContext,
-};
-use anyhow::anyhow;
 use std::{sync::Mutex, time::Duration};
+
+use afplay::{
+    AudioFilePlaybackId, AudioFilePlaybackStatusContext, AudioFilePlaybackStatusEvent,
+    AudioFilePlayer, AudioOutput, DefaultAudioOutput, FilePlaybackOptions,
+};
+
+use anyhow::anyhow;
 use tauri::Manager;
 
 // -------------------------------------------------------------------------------------------------
@@ -24,15 +26,10 @@ impl Playback {
     }
 
     // Initialize audio playback state
-    pub fn initialize(
-        &self,
-        app_handle: tauri::AppHandle,
-    ) -> anyhow::Result<()> {
+    pub fn initialize(&self, app_handle: tauri::AppHandle) -> anyhow::Result<()> {
         // check if we already got initialized
         if self.player.lock().unwrap().is_some() {
-            return Err(anyhow!(
-                "Audio playback already is initialized",
-            ));
+            return Err(anyhow!("Audio playback already is initialized",));
         }
         // Open default device
         match DefaultAudioOutput::open() {
@@ -63,15 +60,29 @@ impl Playback {
             .spawn(move || loop {
                 match event_rx.recv() {
                     Ok(event) => match event {
-                        AudioFilePlaybackStatusEvent::Position { id, path, position, context } => {
-                            send_playback_position_event(&app_handle, id, (*path).to_string(), position, context)
-                        }
+                        AudioFilePlaybackStatusEvent::Position {
+                            id,
+                            path,
+                            position,
+                            context,
+                        } => send_playback_position_event(
+                            &app_handle,
+                            id,
+                            (*path).to_string(),
+                            position,
+                            context,
+                        ),
                         AudioFilePlaybackStatusEvent::Stopped {
                             id,
                             path,
                             exhausted: _,
-                            context
-                        } => send_playback_finished_event(&app_handle, id, (*path).to_string(), context),
+                            context,
+                        } => send_playback_finished_event(
+                            &app_handle,
+                            id,
+                            (*path).to_string(),
+                            context,
+                        ),
                     },
                     Err(err) => {
                         log::info!("Playback event channel closed: '{err}'");
@@ -82,10 +93,7 @@ impl Playback {
             .unwrap();
     }
 
-    pub fn play(
-        &self,
-        file_path: String,
-    ) -> anyhow::Result<AudioFilePlaybackId> {
+    pub fn play(&self, file_path: String) -> anyhow::Result<AudioFilePlaybackId> {
         log::info!("Decoding audio file for playback: '{file_path}'");
 
         // handle initialize errors
@@ -110,11 +118,7 @@ impl Playback {
         }
     }
 
-    pub fn seek(
-        &self,
-        file_id: AudioFilePlaybackId,
-        seek_pos_seconds: f64,
-    ) -> anyhow::Result<()> {
+    pub fn seek(&self, file_id: AudioFilePlaybackId, seek_pos_seconds: f64) -> anyhow::Result<()> {
         log::info!("Seeking audio file #{file_id}");
 
         // handle initialize errors
@@ -204,7 +208,7 @@ pub fn send_playback_position_event(
     file_id: AudioFilePlaybackId,
     file_path: String,
     position: std::time::Duration,
-    _context: Option<AudioFilePlaybackStatusContext>
+    _context: Option<AudioFilePlaybackStatusContext>,
 ) {
     #[derive(Clone, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -231,7 +235,7 @@ pub fn send_playback_finished_event(
     app_handle: &tauri::AppHandle,
     file_id: AudioFilePlaybackId,
     file_path: String,
-    _context: Option<AudioFilePlaybackStatusContext>
+    _context: Option<AudioFilePlaybackStatusContext>,
 ) {
     #[derive(Clone, serde::Serialize)]
     #[serde(rename_all = "camelCase")]

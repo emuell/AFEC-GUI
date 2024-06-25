@@ -19,10 +19,10 @@ class AppState {
   // database
   @mobx.observable
   databasePath: string = "";
-  
+
   @mobx.observable
   databaseError: string = "";
-  
+
   @mobx.observable
   isLoadingDatabase: number = 0;
 
@@ -32,14 +32,14 @@ class AppState {
   // selected file
   @mobx.observable
   selectedFilePath: string = "";
-  
+
   @mobx.observable
   isGeneratingWaveform: number = 0;
 
   // map generation
   @mobx.observable
   isGeneratingMap: number = 0;
-  
+
   @mobx.observable
   mapEpochs: number = isRunningInTauriDev() ? 100 : 1000;
 
@@ -52,10 +52,10 @@ class AppState {
   // audio playback
   @mobx.observable
   autoPlayFilesInGrid: boolean = true;
-  
+
   @mobx.observable
-  autoPlayFilesInList: boolean = true; 
-  
+  autoPlayFilesInList: boolean = true;
+
   // initialize app state
   constructor() {
     mobx.makeObservable(this);
@@ -75,21 +75,21 @@ class AppState {
       this.databasePath = filename;
       this.databaseError = (err as any).message || String(err);
       throw err;
-    } 
+    }
     finally {
-      --this.isLoadingDatabase; 
+      --this.isLoadingDatabase;
     }
   }
 
   // access class names from the currently database
-  get databaseClassNames(): string[]{
+  get databaseClassNames(): string[] {
     return this._database.classNames;
-  } 
+  }
 
   // access category names from the currently database
-  get databaseCategoryNames(): string[]{
+  get databaseCategoryNames(): string[] {
     return this._database.categoryNames;
-  } 
+  }
 
   // fetch files at \param rootPath
   @mobx.action
@@ -99,7 +99,7 @@ class AppState {
       return await this._database.fetchFiles(rootPath);
     }
     finally {
-      --this.isLoadingFiles; 
+      --this.isLoadingFiles;
     }
   }
 
@@ -120,7 +120,7 @@ class AppState {
 
   // calculate a mono waveform for selected file
   async generateWaveform(width: number): Promise<WaveformPoint[]> {
-    if (! this.databasePath || this.databaseError || !this.selectedFilePath) {
+    if (!this.databasePath || this.databaseError || !this.selectedFilePath) {
       return Promise.reject(new Error("No file selected"));
     }
 
@@ -140,13 +140,13 @@ class AppState {
   // generate plot for the given database
   @mobx.action
   async generateMap(): Promise<PlotEntry[]> {
-    
+
     ++this.isGeneratingMap;
     try {
       return await createPlot(this.databasePath, this.mapPerplexity, this.mapTheta, this.mapEpochs);
     }
     finally {
-      --this.isGeneratingMap; 
+      --this.isGeneratingMap;
     }
   }
 

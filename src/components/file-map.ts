@@ -25,8 +25,8 @@ export class FileMap extends MobxLitElement {
   @state()
   private _fetchError: string = "";
 
-  @state() 
-  private _plotEntries: PlotEntry[] = [];  
+  @state()
+  private _plotEntries: PlotEntry[] = [];
 
   constructor() {
     super();
@@ -47,7 +47,7 @@ export class FileMap extends MobxLitElement {
   }
 
   private _fetchMap() {
-    if (! appState.databasePath) {
+    if (!appState.databasePath) {
       this._fetchError = "No database selected";
       this._plotEntries = [];
       return;
@@ -115,8 +115,8 @@ export class FileMap extends MobxLitElement {
           class="control" 
           .checked=${appState.autoPlayFilesInGrid} 
           @checked-changed=${(event: CustomEvent) => {
-            appState.autoPlayFilesInGrid = Boolean(event.detail.value); 
-          }}
+        appState.autoPlayFilesInGrid = Boolean(event.detail.value);
+      }}
           label="Auto-Play">
         </vaadin-checkbox>
         <div class="spacer"></div>
@@ -131,8 +131,8 @@ export class FileMap extends MobxLitElement {
           .value=${String(appState.mapPerplexity)} 
           .disabled=${appState.isGeneratingMap > 0} 
           @change=${(event: CustomEvent) => {
-            appState.mapPerplexity = Number((event.target as HTMLInputElement).value); 
-          }}>
+        appState.mapPerplexity = Number((event.target as HTMLInputElement).value);
+      }}>
         </vaadin-integer-field>
         <span class="label">Theta</span>
         <vaadin-number-field
@@ -145,8 +145,8 @@ export class FileMap extends MobxLitElement {
           .value=${String(appState.mapTheta)} 
           .disabled=${appState.isGeneratingMap > 0} 
           @change=${(event: CustomEvent) => {
-            appState.mapTheta = Number((event.target as HTMLInputElement).value); 
-          }}>
+        appState.mapTheta = Number((event.target as HTMLInputElement).value);
+      }}>
         </vaadin-number-field>
         <span class="label">Epochs</span>
         <vaadin-integer-field
@@ -159,8 +159,8 @@ export class FileMap extends MobxLitElement {
           .value=${String(appState.mapEpochs)} 
           .disabled=${appState.isGeneratingMap > 0} 
           @change=${(event: CustomEvent) => {
-            appState.mapEpochs = Number((event.target as HTMLInputElement).value); 
-          }}>
+        appState.mapEpochs = Number((event.target as HTMLInputElement).value);
+      }}>
         </vaadin-integer-field>
       </vaadin-horizontal-layout>
     `;

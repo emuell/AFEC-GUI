@@ -20,10 +20,10 @@ let playingFiles = new Map<FileId, String>();
 
 // Ids and paths of currently playing back audio files, if any.
 // See also \function addPlaybackPositionEventListener 
-export function playingAudioFiles(): {id: FileId, path: String}[] {
+export function playingAudioFiles(): { id: FileId, path: String }[] {
   let ret = [];
   for (let e of playingFiles) {
-    ret.push({id: e[0], path: e[1]})
+    ret.push({ id: e[0], path: e[1] })
   }
   return ret;
 }
@@ -47,15 +47,15 @@ export async function playAudioFile(filePath: string): Promise<FileId> {
 // register a new playback position change listener. returns a function to remove the listener again.
 export interface PlaybackPositionEvent {
   fileId: FileId,
-  filePath: string, 
-  position: number 
+  filePath: string,
+  position: number
 };
 
 export function addPlaybackPositionEventListener(
   listener: (event: PlaybackPositionEvent) => void
 ): () => void {
   const id = (uniqueListenerId += 1);
-  playbackPositionListeners.push({id, func: listener});
+  playbackPositionListeners.push({ id, func: listener });
 
   return () => {
     const index = playbackPositionListeners.findIndex(l => l.id === id);
@@ -75,7 +75,7 @@ export function addPlaybackFinishedEventListener(
   listener: (event: PlaybackFinishedEvent) => void
 ): () => void {
   const id = (uniqueListenerId += 1);
-  playbackFinishedListeners.push({id, func: listener});
+  playbackFinishedListeners.push({ id, func: listener });
 
   return () => {
     const index = playbackFinishedListeners.findIndex(l => l.id === id);
@@ -88,8 +88,8 @@ export function addPlaybackFinishedEventListener(
 // private listener impls
 let uniqueListenerId: number = 0;
 
-let playbackPositionListeners = Array<{id: number, func: (event: PlaybackPositionEvent) => void}>();
-let playbackFinishedListeners = Array<{id: number, func: (event: PlaybackFinishedEvent) => void}>();
+let playbackPositionListeners = Array<{ id: number, func: (event: PlaybackPositionEvent) => void }>();
+let playbackFinishedListeners = Array<{ id: number, func: (event: PlaybackFinishedEvent) => void }>();
 
 // Receive playback status from backend and forward to listeners 
 listen<PlaybackPositionEvent>("audio_playback_position", (event) => {

@@ -1,6 +1,7 @@
-use sqlite::Connection;
 use std::collections::VecDeque;
+
 use anyhow::anyhow;
+use sqlite::Connection;
 
 // -------------------------------------------------------------------------------------------------
 
@@ -15,10 +16,8 @@ pub struct TsneFeatureRow {
 
 // -------------------------------------------------------------------------------------------------
 
-pub fn get_tsne_features(
-    path: String,
-) -> anyhow::Result<VecDeque<TsneFeatureRow>> {
-    let connection = Connection::open(&path)?;
+pub fn get_tsne_features(path: String) -> anyhow::Result<VecDeque<TsneFeatureRow>> {
+    let connection = Connection::open(path)?;
     let column_names = [
         "filename",
         "classes_VS",

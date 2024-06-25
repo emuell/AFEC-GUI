@@ -9,7 +9,7 @@ import { WaveformPoint } from '../controllers/backend/waveform';
 import '@vaadin/horizontal-layout';
 
 import './file-waveview-plot';
-import {FileWaveViewPlot} from './file-waveview-plot';
+import { FileWaveViewPlot } from './file-waveview-plot';
 
 import './error-message';
 import './spinner';
@@ -42,7 +42,7 @@ export class FileWaveView extends MobxLitElement {
   }
 
   private _fetchWaveform() {
-    if (! appState.databasePath || ! appState.selectedFilePath) {
+    if (!appState.databasePath || !appState.selectedFilePath) {
       this._fetchError = "No file selected";
       this._waveformData = [];
       return;

@@ -48,15 +48,15 @@ export class Database {
 
   // Fetch all suceeded files from database
   async fetchFiles(searchString: string): Promise<File[]> {
-    if (! this._db) {
+    if (!this._db) {
       throw new Error("Database is closed");
     }
- 
+
     const searchWords = searchString.split(' ').filter(v => v.length > 0);
 
     let sql = `SELECT ${fileColumnNames.join(",")} FROM assets WHERE status="succeeded"`;
-    let values: any[] = []; 
-    
+    let values: any[] = [];
+
     // add filename matches, if may
     if (searchWords.length) {
       sql += " AND " + searchWords
@@ -73,14 +73,14 @@ export class Database {
     do {
       const batchResult = await this._db.select<any>(
         `${sql} LIMIT ${batchSize} OFFSET ${batchOffset}`, values);
-      if (! batchResult || ! batchResult.length) {
+      if (!batchResult || !batchResult.length) {
         break;
       }
       filesResult = filesResult || [];
       filesResult.push(...batchResult)
       batchOffset += batchSize;
     } while (true)
-    
+
     if (!filesResult) {
       throw new Error("Failed to read 'files' from database. Is this a high-level AFEC db?")
     }
@@ -88,10 +88,10 @@ export class Database {
     // convert JSON data, if needed
     filesResult.forEach(f => {
       for (const key of Object.keys(f)) {
-        if (key.endsWith("_VR") || key.endsWith("_VVR") || 
-            key.endsWith("_VS") ||key.endsWith("_VVS")) {
+        if (key.endsWith("_VR") || key.endsWith("_VVR") ||
+          key.endsWith("_VS") || key.endsWith("_VVS")) {
           const oldValue = f[key];
-          if (! Array.isArray(oldValue)) {
+          if (!Array.isArray(oldValue)) {
             f[key] = JSON.parse(oldValue);
           }
         }
@@ -100,7 +100,7 @@ export class Database {
 
     return filesResult as File[];
   }
-    
+
   private _db?: SQLite = undefined;
   private _classNames: string[] = [];
   private _categoryNames: string[] = [];

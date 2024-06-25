@@ -17,12 +17,12 @@ import '@vaadin/vertical-layout';
 import '@vaadin/split-layout';
 
 // -------------------------------------------------------------------------------------------------
- 
+
 // Main app layout.
 
 @customElement('afec-app')
 export class App extends MobxLitElement {
-  
+
   private _openDatabaseClick() {
     (async () => {
       // Open a selection dialog for image files
@@ -34,14 +34,14 @@ export class App extends MobxLitElement {
         }]
       });
       if (selectedFile) {
-        const file = Array.isArray(selectedFile) ? 
+        const file = Array.isArray(selectedFile) ?
           (selectedFile as Array<string>)[0] : selectedFile as string;
         await appState.openDatabase(file);
       }
     })()
-    .catch(_err => {
-      // TODO: notification
-    })
+      .catch(_err => {
+        // TODO: notification
+      })
   }
 
   static styles = css`
@@ -83,9 +83,9 @@ export class App extends MobxLitElement {
 
   render() {
     // database error
-    if (appState.databaseError || ! appState.databasePath) {
-      const errorMessage = appState.databaseError ? 
-        `Failed to open database: ${appState.databaseError}` : 
+    if (appState.databaseError || !appState.databasePath) {
+      const errorMessage = appState.databaseError ?
+        `Failed to open database: ${appState.databaseError}` :
         "No database selected";
       return html`
         <vaadin-vertical-layout id="layout">

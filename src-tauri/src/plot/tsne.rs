@@ -1,5 +1,5 @@
 use super::database;
-use anyhow::{ensure, bail};
+use anyhow::{bail, ensure};
 use rstats::Vecg;
 
 // -------------------------------------------------------------------------------------------------
@@ -77,13 +77,14 @@ pub fn create_plot(
     assert_eq!(points.len(), rows.len());
 
     // convert points and rows to PlotEntry
-    Ok(points.zip(rows).map(|(point, row)| {
-        PlotEntry {
+    Ok(points
+        .zip(rows)
+        .map(|(point, row)| PlotEntry {
             filename: row.filename,
             x: point[0],
             y: point[1],
             categories: row.categories,
             classes: row.classes,
-        }})
-    .collect())
+        })
+        .collect())
 }

@@ -23,7 +23,7 @@ fn main() {
                 ColorChoice::Auto,
             )];
             // try creating a file log as well, but don't panic
-            match (|| -> Result<Box<WriteLogger<std::fs::File>>, Box<dyn std::error::Error>> {
+            let result: anyhow::Result<Box<WriteLogger<std::fs::File>>> = {
                 let log_path = app
                     .path_resolver()
                     .app_log_dir()
@@ -36,7 +36,8 @@ fn main() {
                     Config::default(),
                     std::fs::File::create(log_file_path.as_path())?,
                 ))
-            })() {
+            };
+            match result {
                 Err(err) => eprintln!("Failed to create log file: {err}"),
                 Ok(logger) => loggers.push(logger),
             }

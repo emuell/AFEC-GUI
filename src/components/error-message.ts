@@ -7,12 +7,12 @@ import '@vaadin/icon';
 import '@vaadin/vaadin-lumo-styles/vaadin-iconset.js';
 
 // -------------------------------------------------------------------------------------------------
- 
+
 // Shows a message along with an error icon
 
 @customElement('afec-error-message')
 export class ErrorMessage extends LitElement {
-  
+
   @property()
   type: "info" | "error" = "error";
 
@@ -28,8 +28,8 @@ export class ErrorMessage extends LitElement {
   `;
 
   render() {
-    const iconColor = (this.type === "error") 
-      ? "--lumo-error-text-color" 
+    const iconColor = (this.type === "error")
+      ? "--lumo-error-text-color"
       : "--lumo-primary-text-color";
     const errorIcon = html`
       <vaadin-icon 

@@ -12,9 +12,9 @@ import { appState } from '../app-state';
 
 // A single point in the scatter plot based on the backends plot entry
 
-export interface PlotDataPoint extends PlotEntry { 
+export interface PlotDataPoint extends PlotEntry {
   index: number;
-  color: string; 
+  color: string;
 };
 
 // -------------------------------------------------------------------------------------------------
@@ -25,13 +25,13 @@ export interface PlotDataPoint extends PlotEntry {
 export class FileMapPlot extends LitElement {
 
   // Properties
-  @property({type: Array}) 
-  data: PlotEntry[] = [];  
+  @property({ type: Array })
+  data: PlotEntry[] = [];
 
   // Elements
   @query("#container")
   private _plotContainer!: HTMLDivElement | null;
-  
+
   @query("#tooltip")
   private _toolTip!: HTMLDivElement | null;
 
@@ -46,12 +46,12 @@ export class FileMapPlot extends LitElement {
   private _selectedPointIndex: number = -1;
   private _playingPointIndex: number = -1;
   private _zoomTransform = d3.zoomIdentity;
-  
+
   // Consts
   private readonly pointRadius = 1;
   private readonly selectedPointRadius = 1.25;
   private readonly selectedPointColor = '#ff3585'
-    
+
   private _currentPlotRect(): {
     left: number,
     top: number,
@@ -70,12 +70,18 @@ export class FileMapPlot extends LitElement {
     const innerWidth = outerWidth - margin.left - margin.right;
     const innerHeight = outerHeight - margin.top - margin.bottom;
 
-    return { top: margin.top, left: margin.left, 
-      outerWidth, outerHeight, innerWidth, innerHeight };
+    return {
+      top: margin.top,
+      left: margin.left,
+      outerWidth,
+      outerHeight,
+      innerWidth,
+      innerHeight
+    };
   }
 
   private _findClosestPointInPlot(
-    quadTree: d3.Quadtree<PlotDataPoint>, 
+    quadTree: d3.Quadtree<PlotDataPoint>,
     event: any
   ) {
     const mouseX = this._zoomTransform.invertX(event.layerX || event.offsetX);
@@ -92,15 +98,15 @@ export class FileMapPlot extends LitElement {
         .style('opacity', 0.8)
         .style('top', event.pageY + 5 + 'px')
         .style('left', event.pageX + 5 + 'px')
-        .html(`File: ${closestPoint.filename}<br>` + 
-          `Class: ${closestPoint.classes.join(",")}<br>` + 
+        .html(`File: ${closestPoint.filename}<br>` +
+          `Class: ${closestPoint.classes.join(",")}<br>` +
           `Categories: ${closestPoint.categories.join(",")}`);
       // Play the file
       if (appState.autoPlayFilesInGrid && this._playingPointIndex != closestPoint.index) {
         this._playingPointIndex = closestPoint.index;
         appState.fileAbsPath(closestPoint.filename)
           .then(playAudioFile)
-          .catch((err) => { 
+          .catch((err) => {
             console.warn("Audio playback failed: %s", err)
           });
       }
@@ -110,14 +116,14 @@ export class FileMapPlot extends LitElement {
         .style('opacity', 0);
     }
   }
-  
+
   private _onMouseClick(
-    quadTree: d3.Quadtree<PlotDataPoint>, 
+    quadTree: d3.Quadtree<PlotDataPoint>,
     data: PlotDataPoint[],
-    event: any, 
-    xScale: d3.ScaleLinear<number, number, never>, 
-    yScale: d3.ScaleLinear<number, number, never>, 
-    context: CanvasRenderingContext2D, 
+    event: any,
+    xScale: d3.ScaleLinear<number, number, never>,
+    yScale: d3.ScaleLinear<number, number, never>,
+    context: CanvasRenderingContext2D,
   ) {
     const closestPoint = this._findClosestPointInPlot(quadTree, event);
     if (closestPoint) {
@@ -140,12 +146,12 @@ export class FileMapPlot extends LitElement {
       }
     }
   }
-  
+
   private _drawPlotPoints(
-    xScale: d3.ScaleLinear<number, number, never>, 
-    yScale: d3.ScaleLinear<number, number, never>, 
-    context: CanvasRenderingContext2D, 
-    data: PlotDataPoint[], 
+    xScale: d3.ScaleLinear<number, number, never>,
+    yScale: d3.ScaleLinear<number, number, never>,
+    context: CanvasRenderingContext2D,
+    data: PlotDataPoint[],
   ) {
     context.save();
 
@@ -174,7 +180,7 @@ export class FileMapPlot extends LitElement {
   private _createPlot(data: Array<PlotDataPoint>) {
     const initialRect = this._currentPlotRect();
     const container = d3.select(this._plotContainer!);
-   
+
     // reset state
     this._selectedPointIndex = -1;
     this._zoomTransform = d3.zoomIdentity;
@@ -228,7 +234,7 @@ export class FileMapPlot extends LitElement {
       .domain([d3.min(data, (d: any) => d.y), d3.max(data, (d: any) => d.y)])
       .range([initialRect.innerHeight, 0])
       .nice();
-  
+
     // Create drawing context
     const context = this._plotCanvas.node()!.getContext('2d')!;
 
@@ -244,7 +250,7 @@ export class FileMapPlot extends LitElement {
         this._onMouseMove(quadTree, event);
       })
       .on('click', (event) => {
-        this._onMouseClick(quadTree, data, event, xScale , yScale, context);
+        this._onMouseClick(quadTree, data, event, xScale, yScale, context);
       });
 
     // Add Zoom/Drag handler
@@ -255,7 +261,7 @@ export class FileMapPlot extends LitElement {
         this._drawPlotPoints(xScale, yScale, context, data);
       });
     this._plotCanvas.call(zoomHandler);
-  
+
     // Draw initial content
     this._drawPlotPoints(xScale, yScale, context, data);
   }
@@ -280,7 +286,7 @@ export class FileMapPlot extends LitElement {
     // render a new plot
     const categoryNames = appState.databaseCategoryNames;
     const colorScheme = d3.schemeCategory10;
-    
+
     const data: Array<PlotDataPoint> = this.data.map((v, i) => {
       let color: string = "#fff";
       const mainCategory = v.categories.length ? v.categories[0] : "";
@@ -290,7 +296,7 @@ export class FileMapPlot extends LitElement {
           color = colorScheme[Math.trunc(index % colorScheme.length - 1)];
         }
       }
-      return {...v, index: i, color: color}
+      return { ...v, index: i, color: color }
     });
 
     this._createPlot(data);

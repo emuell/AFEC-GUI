@@ -53,7 +53,7 @@ export class FileListDataProvider {
   get sortedFiles(): File[] {
     return this._sortedFiles;
   }
-  
+
   // get actual raw, unsorted file list
   get files(): File[] {
     return this._files;

@@ -10,7 +10,7 @@ import eye from '../assets/images/eye.png'
 import '@vaadin/horizontal-layout';
 
 // -------------------------------------------------------------------------------------------------
- 
+
 // Status bar alike footer in the restic browser app
 
 @customElement('afec-app-footer')
@@ -38,7 +38,7 @@ export class AppFooter extends MobxLitElement {
           messageTimeoutId = undefined;
         }
         this._statusMessage = newMessage;
-      } 
+      }
       else {
         messageTimeoutId = setTimeout(() => {
           this._statusMessage = "";

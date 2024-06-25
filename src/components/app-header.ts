@@ -8,7 +8,7 @@ import '@vaadin/horizontal-layout';
 import '@vaadin/button';
 
 // -------------------------------------------------------------------------------------------------
- 
+
 // Allow opening new repositories and shows active repository in a header alike view
 
 @customElement('afec-app-header')
@@ -39,10 +39,10 @@ export class AppHeader extends MobxLitElement {
 
   render() {
     let databaseName = appState.databasePath;
-    if (! databaseName) {
+    if (!databaseName) {
       databaseName = "No database selected";
     }
-    
+
     return html`
       <vaadin-horizontal-layout id="header">
         <vaadin-button 
@@ -56,7 +56,7 @@ export class AppHeader extends MobxLitElement {
           }>
           Open Database 
         </vaadin-button>
-        <div id="databasePath" class="${!appState.databasePath? "disabled" : ""}">
+        <div id="databasePath" class="${!appState.databasePath ? "disabled" : ""}">
           ${databaseName}
         </div>
       </vaadin-horizontal-layout>
