@@ -2,7 +2,7 @@ import { css, html, LitElement, PropertyValues } from 'lit'
 import { customElement, property, query } from 'lit/decorators.js'
 import { WaveformPoint } from '../controllers/backend/waveform';
 
-import path from 'path-browserify';
+import * as path from '@tauri-apps/api/path'
 import * as d3 from "d3";
 
 import { addPlaybackFinishedEventListener, addPlaybackPositionEventListener } 
@@ -254,19 +254,38 @@ export class FileWaveViewPlot extends LitElement {
     const context = this._playbackCanvas.node()!.getContext('2d')!;
 
     // listen to file playback position changes
-    let renderedFilePath = appState.selectedFileAbsPath;
-    this._removePlaybackPositionListener = addPlaybackPositionEventListener((event) => {
-        if (path.normalize(renderedFilePath) == path.normalize(event.file_path)) {
-          this._drawPlaybackPosition(xScale, yScale, context, event.position);
-        }
-      }
-    );
-    this._removePlaybackFinishedListener = addPlaybackFinishedEventListener((event) => {
-        if (path.normalize(renderedFilePath) == path.normalize(event.file_path)) {
-          this._drawPlaybackPosition(xScale, yScale, context, -1);
-        }
-      }
-    );
+    appState.fileAbsPath(appState.selectedFilePath)
+      .then((absSelectedFilePath) => {
+        this._removePlaybackPositionListener = addPlaybackPositionEventListener(async (event) => {
+          try {
+            if (absSelectedFilePath == event.file_path || 
+                absSelectedFilePath == await path.normalize(event.file_path)) {
+              if (this._removePlaybackPositionListener !== undefined) { // still connected?
+                this._drawPlaybackPosition(xScale, yScale, context, event.position);
+              }
+            }
+          } catch (err) {
+            console.warn("Failed to fetch abs audio file path: %s", err)
+          }
+        });
+        this._removePlaybackFinishedListener = addPlaybackFinishedEventListener(async (event) => {
+          try {
+            if (absSelectedFilePath == event.file_path || 
+                absSelectedFilePath == await path.normalize(event.file_path)) {
+              if (this._removePlaybackFinishedListener !== undefined) {  // still connected?
+                this._drawPlaybackPosition(xScale, yScale, context, -1);
+              }
+            }
+          } catch (err) {
+            console.warn("Failed to fetch abs audio file path: %s", err)
+          }
+        });
+      }).catch((err) => {
+        console.warn("Failed to fetch abs audio file path: %s", err)
+        this._removePlaybackPositionListener = undefined;
+        this._removePlaybackFinishedListener = undefined;
+      });
+
   }
   
   disconnectedCallback(): void {

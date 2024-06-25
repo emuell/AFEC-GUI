@@ -89,7 +89,8 @@ export class FileList extends MobxLitElement {
   }
 
   private _playFile(file: File) {
-    playAudioFile(appState.databasePath, file.filename)
+    appState.fileAbsPath(file.filename)
+      .then(playAudioFile)
       .catch(err => {
         console.warn("Audio playback error: %s", err.message || String(err))
       });

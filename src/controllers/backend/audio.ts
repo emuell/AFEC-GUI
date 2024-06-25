@@ -1,4 +1,3 @@
-import path from 'path-browserify';
 import { invoke } from '@tauri-apps/api/tauri'
 import { listen } from '@tauri-apps/api/event'
 
@@ -31,19 +30,14 @@ export function playingAudioFiles(): {id: FileId, path: String}[] {
 
 // -------------------------------------------------------------------------------------------------
 
-// Play back a single audio file from a database. This stops all previously playing files.
-export async function playAudioFile(dbPath: string, filePath: string): Promise<FileId> {
-  let absPath = path.normalize(filePath.replace(/\\/g, "/"));
-  if (! path.isAbsolute(absPath)) {
-    let dirname = path.dirname(dbPath.replace(/\\/g, "/"));
-    absPath = path.join(dirname, absPath);
-  }
+// Play back a single audio file. This stops all previously playing files.
+export async function playAudioFile(filePath: string): Promise<FileId> {
   // stop all playing files
   for (let id of playingFiles.keys()) {
     await invoke<void>('stop_audio_file', { fileId: id });
   }
   // start playback of the new file
-  let fileId = await invoke<FileId>('play_audio_file', { filePath: absPath });
+  let fileId = await invoke<FileId>('play_audio_file', { filePath: filePath });
   playingFiles.set(fileId, filePath);
   return fileId;
 }
