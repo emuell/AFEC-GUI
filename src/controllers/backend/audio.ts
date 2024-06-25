@@ -46,8 +46,8 @@ export async function playAudioFile(filePath: string): Promise<FileId> {
 
 // register a new playback position change listener. returns a function to remove the listener again.
 export interface PlaybackPositionEvent {
-  file_id: FileId,
-  file_path: string, 
+  fileId: FileId,
+  filePath: string, 
   position: number 
 };
 
@@ -67,8 +67,8 @@ export function addPlaybackPositionEventListener(
 
 // register a new playback finished listener. returns a function to remove the listener again.
 export interface PlaybackFinishedEvent {
-  file_id: FileId,
-  file_path: string,
+  fileId: FileId,
+  filePath: string,
 };
 
 export function addPlaybackFinishedEventListener(
@@ -97,6 +97,6 @@ listen<PlaybackPositionEvent>("audio_playback_position", (event) => {
 });
 
 listen<PlaybackFinishedEvent>("audio_playback_finished", (event) => {
-  playingFiles.delete(event.payload.file_id);
+  playingFiles.delete(event.payload.fileId);
   playbackFinishedListeners.forEach(l => l.func(event.payload));
 });
