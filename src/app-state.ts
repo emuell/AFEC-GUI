@@ -66,6 +66,7 @@ class AppState {
   async openDatabase(filename: string): Promise<void> {
     ++this.isLoadingDatabase;
     try {
+      this.selectedFilePath = "";
       await this._database.open(filename);
       this.databasePath = filename;
       this.databaseError = "";
@@ -136,7 +137,7 @@ class AppState {
     }
   }
 
-  // generatre plot for the given database
+  // generate plot for the given database
   @mobx.action
   async generateMap(): Promise<PlotEntry[]> {
     
